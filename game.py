@@ -109,7 +109,14 @@ class Game:
         print("\nYou found:")
 
         for item in room.items:
-            print("-", item.name)
+            print("\nYou found:")
+            print(item.name)
+
+            if item.img:
+                show_img(item.img)
+
+            print(item.description)
+
             self.player.inventory.append(item)
 
         room.items.clear()
@@ -134,13 +141,16 @@ class Game:
             print("Click.")
 
             print("\nInside, you find:")
-            print("  - Security Badge")
-            print("  - Security Code Note")
 
-            self.player.inventory.append(self.badge)
-            self.player.inventory.append(self.note)
+        for item in [self.badge, self.note]:
+            print("\n" + item.name)
 
-            self.drawer_open = True
+            if item.img:
+                show_img(item.img)
+
+            print(item.description)
+
+            self.player.inventory.append(item)
 
         else:
             print("The drawer is locked.")
@@ -148,7 +158,7 @@ class Game:
     def escape(self):
 
         if self.player.current_room.name != "Control Room":
-            print("There is no exit here.")
+            print("There is no exit here. Hint: Try 'escape'")
             return
 
         has_badge = False
