@@ -1,11 +1,15 @@
-class Item:
+from visuals import show_img
 
-    def __init__(self, name, description):
+class Item:
+    def __init__(self, name, description, img=None):
         self.name = name
         self.description = description
+        self.img = img
 
     def inspect(self):
         print(f"\n{self.name}")
-        print(self.description)
 
-    
+        if self.img:
+            show_img(self.img)
+
+        print(self.description)

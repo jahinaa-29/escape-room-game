@@ -17,7 +17,7 @@ class Player:
         else:
             print("\nYour Inventory:")
             for item in self.inventory:
-                print("-", item)
+                print("-", item.name)
 
     def inspect_item(self, name):
         for item in self.inventory:
@@ -26,3 +26,11 @@ class Player:
                 return
 
         print("Item not found in inventory.")
+
+    def use_item(self, name):
+        for item in self.inventory:
+            if item.name.lower() == name.lower():
+                return item
+
+        print("Item not found in inventory.")
+        return None

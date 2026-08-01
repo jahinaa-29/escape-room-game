@@ -5,7 +5,9 @@ from visuals import show_img
 
 class Game:
     def __init__(self):
+        self.drawer_open = False
         self.create_world()
+        
 
     def create_world(self): 
 
@@ -13,17 +15,28 @@ class Game:
 
         lab = Room(
             "Main Laboratory",
-            "It's dark. The old laboratory is filled with scattered abandoned equipment."
+            "It's dark. The old laboratory is filled with scattered abandoned equipment.",
+            "lab"
         )
+
+        print("LAB IMAGE: ", lab.img)
 
         office = Room(
             "Office",
-            "A cramped dimly lit office with a desk which has a locked drawer."
+            "A cramped dimly lit office with a desk which has a locked drawer.",
+            "office"
         )
 
         storage = Room(
             "Storage Room",
-            "Shelves line the peeling walls. Something is hidden here."
+            "Shelves line the peeling walls. Something is hidden here.",
+            "storage"
+        )
+
+        control = Room(
+            "Control Room",
+            "A massive control panel covers the walls. A security terminal flashes beside the exit door.",
+            "control"
         )
 
         # -------create the items---------
@@ -35,22 +48,26 @@ class Game:
 
         flashlight = Item(
             "Flashlight",
-            "An old black worn flashlight. It still works."
+            "An old black worn flashlight. It still works.",
+            "flashlight"
         )
 
         battery = Item(
             "Battery",
-            "A heavy industrial battery used to power a control terminal."
+            "A heavy industrial battery used to power a control terminal.",
+            "battery"
         )
 
         badge = Item(
             "Security Badge",
-            "An unknown employee security badge with high level clearance."
+            "An unknown employee security badge with high level clearance.",
+            "badge"
         )
 
         note = Item(
             "Security Code Note",
-            "A sticky note that reads: 'Emergency Override Code: 1017'."    
+            "A sticky note that reads: 'Emergency Override Code: 1017'.",    
+            "note"
         )       
 
 
@@ -62,21 +79,28 @@ class Game:
         office.connect("lab", lab)
         storage.connect("lab", lab)
 
+        office.connect("control", control)
+        control.connect("office", office)
+
         # Spawns player in the lab with a key
         self.player = Player(lab)
         self.key = key
         self.player.inventory.append(key)
 
         # Place all the items in their respective rooms
-        lab.items.append("Flashlight")
-        office.items.append("Security Badge")
-        office.items.append("Security Code Note")
-        storage.items.append("Battery")
+        self.badge = badge
+        self.note = note
+        lab.items.append(flashlight)
+        storage.items.append(battery)
 
     def search_room(self):
         room = self.player.current_room
 
-        print("\n You searched the room...")
+        print("\nYou searched the room...")
+
+        if room.name == "Office" and not self.drawer_open:
+            print("Hmm... You notice a locked desk drawer... (Hint... Check commands again with 'help')")
+            return
 
         if not room.items:
             print("Nothing useful was found.")
@@ -85,13 +109,81 @@ class Game:
         print("\nYou found:")
 
         for item in room.items:
-            print("-", item)
+            print("-", item.name)
             self.player.inventory.append(item)
 
-        # removes duplicate items in the room that have already been found
-        room.items.clear() 
-        
+        room.items.clear()
 
+    def open_drawer(self):
+        if self.player.current_room.name != "Office":
+            print("There is no locked drawer here.")
+            return
+
+        if self.drawer_open:
+            print("The drawer is already open.")
+            return
+
+        has_key = False
+
+        for item in self.player.inventory:
+            if item.name == "Brass Key":
+                has_key = True
+
+        if has_key:
+            print("\nYou insert the Brass Key into the drawer and turn.")
+            print("Click.")
+
+            print("\nInside, you find:")
+            print("  - Security Badge")
+            print("  - Security Code Note")
+
+            self.player.inventory.append(self.badge)
+            self.player.inventory.append(self.note)
+
+            self.drawer_open = True
+
+        else:
+            print("The drawer is locked.")
+
+    def escape(self):
+
+        if self.player.current_room.name != "Control Room":
+            print("There is no exit here.")
+            return
+
+        has_badge = False
+
+        for item in self.player.inventory:
+            if item.name == "Security Badge":
+                has_badge = True
+
+        if has_badge:
+            print("""
+            You approach the security terminal.
+
+            You swipe the Security Badge.
+
+            ...
+
+            ACCESS GRANTED.
+
+            The emergency exit door unlocks.
+
+            You step outside into the cold night air.
+
+            =========================
+                YOU ESCAPED!
+            =========================
+            """)
+
+            show_img("exit")
+
+            quit()
+
+        else:
+            print("The terminal flashes red.")
+            print("Security clearance required.")
+        
 
     # ----start the game----
 
@@ -130,7 +222,7 @@ class Game:
         while True:
             command = input("\n> ").lower()
 
-            if command.startswith("m"):
+            if command.startswith("m "):
                 direction = command.split(" ")[1]
                 self.player.move(direction)
 
@@ -138,11 +230,21 @@ class Game:
                 self.player.current_room.describe()
 
 
-            elif command == "i":
+            elif command == "inv":
                 self.player.show_inventory()
 
             elif command == "s":
                 self.search_room()
+
+            elif command.startswith("i "):
+                item_name = command[2:]
+                self.player.inspect_item(item_name)
+
+            elif command == "open drawer":
+                self.open_drawer()
+
+            elif command == "escape":
+                self.escape()
 
             elif command == "help":
                 print("""
@@ -153,6 +255,12 @@ class Game:
                 s - search the room
                 i <insert item name> - inspect the item
                 inv - check inventory
+
+                Special commands: 
+                -------------------
+                In Office, use 'open drawer'
+                In Control Room, use "escape"
+
 
                 help
                 quit
