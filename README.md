@@ -1,17 +1,5 @@
 # Escape the Lab
 
-## Course Information
-
-| Detail | Information |
-|---|---|
-| Course | CS3003 - Programming Languages |
-| Student Name | Aisha Arina Jahin |
-| Student Email | jahinaa@mail.uc.edu |
-| Semester | Summer 2026 |
-| Instructor | Prof. Hrishikesh Bhide|
-| Language | Python |
-
-
 ## Description
 
 A text-based escape room adventure game built in Python for CS3003 Programming Languages. The project demonstrates object-oriented programming concepts through interactive gameplay, object management, and modular program design.
@@ -36,7 +24,9 @@ The game is implemented using Python and focuses on applying object-oriented pro
 
 The player begins in the Main Laboratory with a Brass Key.
 
-Example gameplay flow:
+<details>
+<summary>Example gameplay flow:</summary>
+
 
 1. Explore the Main Laboratory
 2. Search rooms to discover useful items
@@ -46,6 +36,7 @@ Example gameplay flow:
 6. Obtain the Security Badge
 7. Access the Control Room
 8. Escape the laboratory
+</details>
 
 ## Commands
 
@@ -61,27 +52,41 @@ Example gameplay flow:
 | `help` | Display available commands |
 | `quit` | Exit the game |
 
-## Project Structure
-escape-sequence/
-│
-├── main.py # Program entry point
-├── game.py # Main game logic and interactions
-├── room.py # Room class definition
-├── player.py # Player movement and inventory system
-├── item.py # Item class definition
-├── visuals.py # ASCII art loading functionality
-│
-├── assets/ # dot art files
-│ ├── lab.txt
-│ ├── office.txt
-│ ├── storage.txt
-│ ├── control.txt
-│ ├── key.txt
-│ └── note.txt
-│ └── battery.tx
-│ └── exit.txt
-│
-├── README.md
-└── requirements.txt
+## How to Run
+In terminal, enter the following commands:
 
+`% git clone [<repo-u>](https://github.com/jahinaa-29/escape-room-game.git)`  
+`% cd escape-the-lab`  
+`% python3 main.py`
+
+## Future Improvements
+
+
+## Project Structure
+```
+escape-sequence/  
+│  
+├── main.py # Program entry point  
+├── game.py # Main game logic and interactions  
+├── room.py # Room class definition  
+├── player.py # Player movement and inventory system  
+├── item.py # Item class definition  
+├── visuals.py # ASCII art loading functionality  
+│  
+├── assets/ # dot art files  
+│ ├── lab.txt  
+│ ├── office.txt  
+│ ├── storage.txt  
+│ ├── control.txt  
+│ ├── key.txt  
+│ └── note.txt  
+│ └── battery.txt  
+│ └── exit.txt  
+│  
+├── README.md  
+└── requirements.txt  
+```
+---
+
+Built for CS3003 Programming Languages, Summer 2026
 
