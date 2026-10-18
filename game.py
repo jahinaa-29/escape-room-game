@@ -173,7 +173,18 @@ class Game:
 
             You swipe the Security Badge.
 
-            ...
+            The terminal asks for an emergency override code.
+
+            """)
+
+            code = input("Enter code: ").strip()
+
+            if code != "1017":
+                print("\nACCESS DENIED.")
+                print("The terminal buzzes angrily.")
+                return
+
+            print("""
 
             ACCESS GRANTED.
 
