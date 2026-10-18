@@ -20,8 +20,7 @@ class Room:
         else:
             if self.img:
                 show_img(self.img)
-
-        print(f"\n{self.description}")
+            print(f"\n{self.description}")
 
         print("\nExits:")
         for direction in self.connections:

@@ -2,11 +2,15 @@ class Player:
     def __init__(self, start_room):
         self.current_room = start_room
         self.inventory = []                 # collect items as you go
+        self.flashlight_on = False
 
+    def has_light(self):
+        return self.flashlight_on and any(i.name == "Flashlight" for i in self.inventory)
+    
     def move(self, direction):
         if direction in self.current_room.connections:
             self.current_room = self.current_room.connections[direction]
-            self.current_room.describe()
+            self.current_room.describe(self.has_light())
         else:
             print("You cannot go that way.")
 

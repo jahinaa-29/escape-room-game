@@ -30,7 +30,8 @@ class Game:
         storage = Room(
             "Storage Room",
             "Shelves line the peeling walls. Something is hidden here.",
-            "storage"
+            "storage",
+            dark=True
         )
 
         control = Room(
@@ -93,9 +94,26 @@ class Game:
         lab.items.append(flashlight)
         storage.items.append(battery)
 
+    def use_item(self, name):
+        item = self.player.use_item(name)
+        if item is None:
+            return
+        if item.name == "Flashlight":
+            self.player.flashlight_on = not self.player.flashlight_on
+            state= "on" if self.player.flashlight_on else "off"
+            print(f"\nYou switch the flashlight {state}.")
+            self.player.current_room.describe(self.player.has_light())
+
+        else:
+            print(f"You can not use the {item.name} right now.")
+
     def search_room(self):
         room = self.player.current_room
 
+        if room.dark and not self.player.has_light():
+            print("\nIt is too dark to search. You need a light.")
+            return
+        
         print("\nYou searched the room...")
 
         if room.name == "Office" and not self.drawer_open:
@@ -142,15 +160,14 @@ class Game:
 
             print("\nInside, you find:")
 
-        for item in [self.badge, self.note]:
-            print("\n" + item.name)
+            for item in [self.badge, self.note]:
+                print("\n" + item.name)
 
-            if item.img:
-                show_img(item.img)
+                if item.img:
+                    show_img(item.img)
 
-            print(item.description)
-
-            self.player.inventory.append(item)
+                print(item.description)
+                self.player.inventory.append(item)
 
         else:
             print("The drawer is locked.")
@@ -222,6 +239,7 @@ class Game:
                 e - explore the room
                 s - search the room
                 i <insert item name> - inspect the item
+                u <insert item name> - use the item
                 inv - check inventory
             
                 help
@@ -248,7 +266,7 @@ class Game:
                 self.player.move(direction)
 
             elif command == "e":
-                self.player.current_room.describe()
+                self.player.current_room.describe(self.player.has_light())
 
 
             elif command == "inv":
@@ -266,6 +284,9 @@ class Game:
 
             elif command == "escape":
                 self.escape()
+
+            elif command.startswith("u "):
+                self.use_item(command[2:])
 
             elif command == "help":
                 print("""
