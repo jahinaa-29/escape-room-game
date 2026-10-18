@@ -6,8 +6,8 @@ from visuals import show_img
 class Game:
     def __init__(self):
         self.drawer_open = False
+        self.panel_powered = False
         self.create_world()
-        
 
     def create_world(self): 
 
@@ -98,11 +98,23 @@ class Game:
         item = self.player.use_item(name)
         if item is None:
             return
+        
         if item.name == "Flashlight":
             self.player.flashlight_on = not self.player.flashlight_on
             state= "on" if self.player.flashlight_on else "off"
             print(f"\nYou switch the flashlight {state}.")
             self.player.current_room.describe(self.player.has_light())
+
+        elif item.name == "Battery":
+            if self.player.current_room.name != "Control Room":
+                print("There is nothing in this room that needs power.")
+            elif self.panel_powered:
+                print("\nThe panel is already powered.")
+            else:
+                self.panel_powered=True
+                self.player.inventory.remove(item)
+                print("\nYou fit the battery into the control panel.")
+                print("The panel hums to life and the security terminal flickers on.")
 
         else:
             print(f"You can not use the {item.name} right now.")
@@ -178,6 +190,10 @@ class Game:
             print("There is no exit here. Hint: Try 'escape'")
             return
 
+        if not self.panel_powered:
+            print("\nThe terminal is powered off. It needs a power source.")
+            return 
+        
         has_badge = False
 
         for item in self.player.inventory:
@@ -296,6 +312,7 @@ class Game:
                 e - explore the room
                 s - search the room
                 i <insert item name> - inspect the item
+                u <insert item name> - use the item
                 inv - check inventory
 
                 Special commands: 
